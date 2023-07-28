@@ -23,6 +23,16 @@ namespace Vention.Services
             var selectedUser =  await this.appDbContext.Users.Where(u=>u.Id == id).FirstOrDefaultAsync();
             return selectedUser;
         }
+        public async Task<IEnumerable<User>> GetAllByUserNameAsync(bool ascending)
+        {
+            IQueryable<User> users = this.appDbContext.Users.OrderBy(u => u.Name);
+            if (!ascending)
+            {
+                users = users.OrderByDescending(u => u.Name);
+            }
+                return await users.ToListAsync();
+
+        }
 
         public async Task<bool> CreateAsync(User user)
         {

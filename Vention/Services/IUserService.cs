@@ -6,6 +6,7 @@ namespace Vention.Services
     {
         public IQueryable<User> GellAll();
         public Task<User> GetByIdAsync(int id);
+        public Task<IEnumerable<User>> GetAllByUserNameAsync(bool ascending);
         public Task<bool> CreateAsync(User user);
         public Task<bool> UpdateAsync(int id, User user);
         public Task<bool> DeleteAsync(int id);

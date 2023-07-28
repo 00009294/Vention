@@ -2,12 +2,11 @@
 using Vention.Models;
 using Vention.Services;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Vention.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService userService;
@@ -28,9 +27,20 @@ namespace Vention.Controllers
             
         }
 
-        // GET api/<UsersController>/5
+        [HttpGet("name")]
+        public async Task<ActionResult<IEnumerable<User>>> GetByName(bool ascending = true,int? maxUser = null)
+        {
+            var sortedUsers = await this.userService.GetAllByUserNameAsync(ascending);
+            if(maxUser.HasValue && maxUser.Value > 0)
+            {
+                sortedUsers = sortedUsers.Take(maxUser.Value);
+            }
+            return Ok(sortedUsers);
+           
+        }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             var user =  await this.userService.GetByIdAsync(id);
             if (ModelState.IsValid) return Ok(user);
@@ -39,7 +49,7 @@ namespace Vention.Controllers
             
         }
 
-        // POST api/<UsersController>
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] User user)
         {
@@ -47,19 +57,19 @@ namespace Vention.Controllers
             return Ok("Added");
         }
 
-        // PUT api/<UsersController>/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] User user)
         {
             await this.userService.UpdateAsync(id, user);
+            
             return Ok("Updated");
         }
 
-        // DELETE api/<UsersController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await this.userService.DeleteAsync(id);
+            
             return Ok("Deleted");
         }
     }
